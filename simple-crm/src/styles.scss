@@ -7,16 +7,35 @@
 
 html {
   height: 100%;
+  font-size: 16px;
   @include mat.theme(
     (
       color: (
-        primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
+        // Cyclam / Rose als Primary-Farbe
+        primary: mat.$rose-palette,
+        tertiary: mat.$magenta-palette,
       ),
       typography: Roboto,
       density: 0,
     )
   );
+
+  // Material 3 färbt Toolbars standardmäßig nicht – explizit Primary setzen
+  @include mat.toolbar-overrides(
+    (
+      container-background-color: var(--mat-sys-primary),
+      container-text-color: var(--mat-sys-on-primary),
+    )
+  );
+
+  // Kleinste Schriften mindestens 16px (auch mobil)
+  --mat-sys-body-small: 400 16px / 1.5 Roboto, sans-serif;
+  --mat-sys-body-medium: 400 16px / 1.5 Roboto, sans-serif;
+  --mat-sys-body-large: 400 16px / 1.5 Roboto, sans-serif;
+  --mat-sys-label-small: 500 16px / 1.4 Roboto, sans-serif;
+  --mat-sys-label-medium: 500 16px / 1.4 Roboto, sans-serif;
+  --mat-sys-label-large: 500 16px / 1.4 Roboto, sans-serif;
+  --mat-sys-title-small: 500 16px / 1.4 Roboto, sans-serif;
 }
 
 body {
@@ -31,10 +50,62 @@ body {
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
+  font-size: 16px;
 
   // Reset the user agent margin.
   margin: 0;
   height: 100%;
+}
+
+app-root {
+  display: block;
+  height: 100%;
+}
+
+/* Nie unter 16px – Inputs, Labels, Hints, Errors, Listen, Buttons */
+input,
+textarea,
+select,
+button,
+label,
+.mat-mdc-button-base,
+.mat-mdc-form-field,
+.mat-mdc-form-field-label,
+.mat-mdc-floating-label,
+.mat-mdc-input-element,
+.mat-mdc-form-field-hint,
+.mat-mdc-form-field-error,
+.mat-mdc-list-item,
+.mdc-list-item__primary-text,
+.mat-mdc-dialog-title,
+.mat-mdc-dialog-content,
+.mat-mdc-snackbar-label,
+.mat-calendar,
+.mat-calendar-body-cell {
+  font-size: 16px !important;
+}
+
+/* Pointer-Cursor für alle klickbaren Elemente */
+a,
+button,
+[role='button'],
+[mat-button],
+[matButton],
+[matIconButton],
+[mat-icon-button],
+.mat-mdc-button-base,
+.mat-mdc-icon-button,
+input[type='button'],
+input[type='submit'],
+input[type='reset'],
+input[type='checkbox'],
+input[type='radio'],
+select,
+summary,
+label[for],
+[onclick],
+[tabindex]:not([tabindex='-1']) {
+  cursor: pointer;
 }
 
 /* You can add global styles to this file, and also import other style files */
