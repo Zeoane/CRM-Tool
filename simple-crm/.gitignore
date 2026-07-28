@@ -42,3 +42,9 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Firebase / secrets
+/src/app/firebase.config.ts
+.env
+.env.*
+!.env.example
