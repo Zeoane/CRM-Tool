@@ -108,4 +108,48 @@ label[for],
   cursor: pointer;
 }
 
+/* Create-user dialog without rounded corners */
+.user-dialog-panel .mat-mdc-dialog-container,
+.user-dialog-panel .mdc-dialog__surface {
+  border-radius: 0 !important;
+  --mdc-dialog-container-shape: 0;
+  --mat-dialog-container-shape: 0;
+  overflow: hidden;
+  padding-top: 0 !important;
+}
+
+.user-dialog-panel .mat-mdc-dialog-title {
+  padding-top: 16px;
+  font-weight: 700 !important;
+  font-size: 3em !important;
+  line-height: 1.15 !important;
+}
+
+.user-dialog-panel .save-progress {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: block;
+  width: 100%;
+  height: 12px !important;
+  --mdc-linear-progress-track-height: 12px;
+  --mdc-linear-progress-active-indicator-height: 12px;
+  --mat-progress-bar-active-indicator-height: 12px;
+  --mat-progress-bar-track-height: 12px;
+  --mdc-linear-progress-track-color: color-mix(in srgb, var(--mat-sys-primary) 25%, transparent);
+  --mdc-linear-progress-active-indicator-color: color-mix(
+    in srgb,
+    var(--mat-sys-primary) 70%,
+    white
+  );
+  --mat-progress-bar-track-color: color-mix(in srgb, var(--mat-sys-primary) 25%, transparent);
+  --mat-progress-bar-active-indicator-color: color-mix(in srgb, var(--mat-sys-primary) 70%, white);
+}
+
+.user-dialog-panel .save-progress .mdc-linear-progress__bar-inner {
+  border-top-width: 12px !important;
+}
+
 /* You can add global styles to this file, and also import other style files */
