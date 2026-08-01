@@ -16,7 +16,12 @@
         <mat-icon matListItemIcon>fact_check</mat-icon>
         <span matListItemTitle>Dashboard</span>
       </a>
-      <a mat-list-item routerLink="/user" routerLinkActive="active-link">
+      <a
+        mat-list-item
+        routerLink="/user"
+        routerLinkActive="active-link"
+        (click)="openUserDialog()"
+      >
         <mat-icon matListItemIcon>face</mat-icon>
         <span matListItemTitle>User</span>
       </a>
@@ -48,45 +53,10 @@
     </mat-toolbar>
 
     <main class="app-main">
-      <div class="users-table-card">
-        <table mat-table [dataSource]="users()" class="users-table">
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Name</th>
-            <td mat-cell *matCellDef="let user">{{ userName(user) }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="email">
-            <th mat-header-cell *matHeaderCellDef>Email</th>
-            <td mat-cell *matCellDef="let user">{{ user.email || '—' }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="city">
-            <th mat-header-cell *matHeaderCellDef>City</th>
-            <td mat-cell *matCellDef="let user">{{ user.city || '—' }}</td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr
-            mat-row
-            *matRowDef="let row; columns: displayedColumns"
-            class="users-table__row"
-            (click)="openUser(row)"
-          ></tr>
-
-          <tr class="mat-row no-data-row" *matNoDataRow>
-            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-              No users created yet.
-            </td>
-          </tr>
-        </table>
-      </div>
-
-      @if (drawer.opened) {
-        <router-outlet />
-      }
+      <router-outlet />
     </main>
 
-    <button matFab class="fab-add" aria-label="Add user" (click)="openUserDialog()">
+    <button matFab class="fab-add" aria-label="Add user" (click)="openUserPage()">
       <mat-icon svgIcon="add-user"></mat-icon>
     </button>
   </mat-drawer-content>

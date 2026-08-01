@@ -1,6 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
-import { Component, PLATFORM_ID, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -9,11 +7,7 @@ import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatTableModule } from '@angular/material/table';
-import { of } from 'rxjs';
 import { UserDialog } from './user-dialog/user-dialog';
-import { CrmUserRow } from './user/crm-user';
-import { UserService } from './user/user.service';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +21,6 @@ import { UserService } from './user/user.service';
     MatSidenavModule,
     MatListModule,
     MatDialogModule,
-    MatTableModule,
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -35,15 +28,6 @@ import { UserService } from './user/user.service';
 export class App {
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
-  private readonly userService = inject(UserService);
-  private readonly platformId = inject(PLATFORM_ID);
-
-  readonly displayedColumns = ['name', 'email', 'city'] as const;
-
-  readonly users = toSignal(
-    isPlatformBrowser(this.platformId) ? this.userService.getUsers() : of([] as CrmUserRow[]),
-    { initialValue: [] as CrmUserRow[] },
-  );
 
   constructor() {
     const iconRegistry = inject(MatIconRegistry);
@@ -58,19 +42,8 @@ export class App {
       sanitizer.bypassSecurityTrustResourceUrl('img/add-user.svg'),
     );
 
-    // On reload, clear routed page content (e.g. /dashboard)
+    // Start page on reload: empty home, no dashboard table
     void this.router.navigateByUrl('/');
-  }
-
-  userName(user: CrmUserRow): string {
-    return `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim() || '—';
-  }
-
-  openUser(user: CrmUserRow): void {
-    if (!user.id) {
-      return;
-    }
-    void this.router.navigate([{ outlets: { overlay: ['user', user.id] } }]);
   }
 
   onDrawerOpenedChange(opened: boolean): void {
@@ -79,7 +52,19 @@ export class App {
     }
   }
 
+  openUserPage(): void {
+    void this.router.navigateByUrl('/user');
+    this.openUserDialog();
+  }
+
   openUserDialog(): void {
+    const alreadyOpen = this.dialog.openDialogs.some(
+      (ref) => ref.componentInstance instanceof UserDialog,
+    );
+    if (alreadyOpen) {
+      return;
+    }
+
     this.dialog.open(UserDialog, {
       width: '720px',
       maxWidth: '92vw',
