@@ -6,7 +6,9 @@
     (openedChange)="onDrawerOpenedChange($event)"
   >
     <div class="sidenav-logo">
-      <img src="img/logo-crm.svg" alt="Simple CRM logo" />
+      <div class="sidenav-logo__media">
+        <img src="img/logo-crm.svg" alt="Simple CRM logo" />
+      </div>
     </div>
 
     <mat-nav-list>
@@ -64,7 +66,12 @@
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            class="users-table__row"
+            (click)="openUser(row)"
+          ></tr>
 
           <tr class="mat-row no-data-row" *matNoDataRow>
             <td class="mat-cell" [attr.colspan]="displayedColumns.length">
@@ -84,3 +91,5 @@
     </button>
   </mat-drawer-content>
 </mat-drawer-container>
+
+<router-outlet name="overlay" />

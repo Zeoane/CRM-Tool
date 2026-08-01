@@ -66,6 +66,13 @@ export class App {
     return `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim() || '—';
   }
 
+  openUser(user: CrmUserRow): void {
+    if (!user.id) {
+      return;
+    }
+    void this.router.navigate([{ outlets: { overlay: ['user', user.id] } }]);
+  }
+
   onDrawerOpenedChange(opened: boolean): void {
     if (!opened) {
       void this.router.navigateByUrl('/');

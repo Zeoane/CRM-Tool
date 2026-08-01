@@ -1,0 +1,193 @@
+<div class="user-id-backdrop" (click)="onBackdropClick()" role="presentation">
+  <section
+    class="user-id-card"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="user-id-title"
+    (click)="onCardClick($event)"
+  >
+    <button
+      matIconButton
+      type="button"
+      class="user-id-card__menu-btn"
+      aria-label="User card options"
+      [matMenuTriggerFor]="cardMenu"
+      (click)="$event.stopPropagation()"
+    >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #cardMenu="matMenu" xPosition="before" class="user-id-card-menu">
+      <button mat-menu-item type="button" [disabled]="!canEdit() || editing()" (click)="startEdit()">
+        <mat-icon>edit</mat-icon>
+        <span>Edit</span>
+      </button>
+      <button mat-menu-item type="button" [disabled]="saving()" (click)="close()">
+        <mat-icon>close</mat-icon>
+        <span>Close</span>
+      </button>
+    </mat-menu>
+
+    <div class="user-id-card__hero"></div>
+
+    @if (state(); as current) {
+      @switch (current.status) {
+        @case ('loading') {
+          <div class="user-id-card__status">
+            <mat-progress-spinner diameter="40" mode="indeterminate" />
+            <p>Loading user…</p>
+          </div>
+        }
+        @case ('missing') {
+          <div class="user-id-card__status">
+            <mat-icon aria-hidden="true">person_off</mat-icon>
+            <p>User not found.</p>
+          </div>
+        }
+        @case ('error') {
+          <div class="user-id-card__status">
+            <mat-icon aria-hidden="true">error_outline</mat-icon>
+            <p>{{ current.message }}</p>
+          </div>
+        }
+        @case ('ready') {
+          @if (editing()) {
+            <form class="user-id-edit" [formGroup]="form" (ngSubmit)="saveEdit()">
+              <div class="user-id-card__identity">
+                <div class="user-id-avatar" aria-hidden="true">
+                  <mat-icon class="user-id-avatar__placeholder">person</mat-icon>
+                  <span class="user-id-avatar__edit" title="Edit profile photo (coming soon)">
+                    <mat-icon>edit</mat-icon>
+                  </span>
+                </div>
+              </div>
+
+              <div class="user-id-edit__fields">
+                <div class="user-id-edit__row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>First name</mat-label>
+                    <input matInput formControlName="firstName" [readonly]="saving()" />
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Last name</mat-label>
+                    <input matInput formControlName="lastName" [readonly]="saving()" />
+                  </mat-form-field>
+                </div>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Email</mat-label>
+                  <input matInput type="email" formControlName="email" [readonly]="saving()" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Date of birth</mat-label>
+                  <input
+                    matInput
+                    [matDatepicker]="birthPicker"
+                    formControlName="birthDate"
+                    [max]="maxBirthDate"
+                    [readonly]="saving()"
+                  />
+                  <mat-datepicker-toggle
+                    matIconSuffix
+                    [for]="birthPicker"
+                    [disabled]="saving()"
+                  ></mat-datepicker-toggle>
+                  <mat-datepicker #birthPicker></mat-datepicker>
+                </mat-form-field>
+
+                <div class="user-id-edit__row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Street</mat-label>
+                    <input matInput formControlName="street" [readonly]="saving()" />
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>House number</mat-label>
+                    <input matInput formControlName="houseNumber" [readonly]="saving()" />
+                  </mat-form-field>
+                </div>
+
+                <div class="user-id-edit__row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>ZIP</mat-label>
+                    <input matInput formControlName="zipCode" inputmode="numeric" [readonly]="saving()" />
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>City</mat-label>
+                    <input matInput formControlName="city" [readonly]="saving()" />
+                  </mat-form-field>
+                </div>
+
+                @if (saveError()) {
+                  <p class="user-id-edit__error">{{ saveError() }}</p>
+                }
+              </div>
+
+              <div class="user-id-edit__actions">
+                <button matButton type="button" (click)="cancelEdit()" [disabled]="saving()">
+                  Cancel
+                </button>
+                <button
+                  matIconButton
+                  type="submit"
+                  class="user-id-edit__save"
+                  aria-label="Save changes"
+                  [disabled]="saving()"
+                >
+                  <mat-icon>check</mat-icon>
+                </button>
+              </div>
+            </form>
+          } @else {
+            <div class="user-id-card__identity">
+              <div class="user-id-avatar" aria-hidden="true">
+                <mat-icon class="user-id-avatar__placeholder">person</mat-icon>
+                <span class="user-id-avatar__edit" title="Edit profile photo (coming soon)">
+                  <mat-icon>edit</mat-icon>
+                </span>
+              </div>
+
+              <h1 id="user-id-title" class="user-id-card__name">
+                {{ displayName(current.user) }}
+              </h1>
+              <p class="user-id-card__subtitle">{{ current.user.email || '—' }}</p>
+            </div>
+
+            <dl class="user-id-fields">
+              <div class="user-id-fields__item">
+                <dt>Date of birth</dt>
+                <dd>
+                  {{
+                    current.user.birthDate
+                      ? (current.user.birthDate | date: 'mediumDate')
+                      : '—'
+                  }}
+                </dd>
+              </div>
+              <div class="user-id-fields__item user-id-fields__item--half">
+                <dt>Street</dt>
+                <dd>{{ current.user.street || '—' }}</dd>
+              </div>
+              <div class="user-id-fields__item user-id-fields__item--half">
+                <dt>House number</dt>
+                <dd>{{ current.user.houseNumber || '—' }}</dd>
+              </div>
+              <div class="user-id-fields__item user-id-fields__item--half">
+                <dt>ZIP</dt>
+                <dd>{{ current.user.zipCode || '—' }}</dd>
+              </div>
+              <div class="user-id-fields__item user-id-fields__item--half">
+                <dt>City</dt>
+                <dd>{{ current.user.city || '—' }}</dd>
+              </div>
+              <div class="user-id-fields__item user-id-fields__item--meta">
+                <dt>User ID</dt>
+                <dd>{{ current.user.id }}</dd>
+              </div>
+            </dl>
+          }
+        }
+      }
+    }
+  </section>
+</div>

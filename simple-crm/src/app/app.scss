@@ -1,6 +1,7 @@
 :host {
   display: block;
   height: 100%;
+  --app-header-height: 82px;
 }
 
 .app-sidenav {
@@ -25,10 +26,7 @@
 }
 
 .sidenav-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 82px;
+  height: var(--app-header-height);
   margin: 0;
   border: none;
   border-radius: 0;
@@ -36,12 +34,25 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.14);
   position: relative;
   z-index: 1;
-  padding: 0 12px;
+  box-sizing: border-box;
+  /* Logo-Bereich und Trennlinie getrennt halten */
+  display: flex;
+  flex-direction: column;
+}
+
+.sidenav-logo__media {
+  flex: 1 1 auto;
+  min-height: 0; /* erlaubt dem Flex-Kind zu schrumpfen */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Abstand zur Trennlinie; Schriftgröße kommt aus dem SVG-viewBox */
+  padding: 6px 10px;
+  overflow: hidden;
   box-sizing: border-box;
 }
 
-.sidenav-logo img {
-  max-height: calc(48px * 1.22 * 1.28);
+.sidenav-logo__media img {
   max-width: 100%;
   width: auto;
   height: auto;
@@ -72,6 +83,14 @@
 .users-table {
   width: 100%;
   background: transparent;
+}
+
+.users-table__row {
+  cursor: pointer;
+
+  &:hover {
+    background: color-mix(in srgb, var(--mat-sys-primary) 8%, transparent);
+  }
 }
 
 .users-table .mat-mdc-header-cell,
@@ -112,7 +131,8 @@
 }
 
 mat-toolbar {
-  height: 64px;
+  height: var(--app-header-height);
+  min-height: var(--app-header-height);
   background-color: var(--mat-sys-primary);
   color: var(--mat-sys-on-primary);
   border-bottom: 1px solid #9e9e9e;
