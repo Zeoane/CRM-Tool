@@ -28,7 +28,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 64px;
+  height: 82px;
   margin: 0;
   border: none;
   border-radius: 0;
@@ -41,7 +41,7 @@
 }
 
 .sidenav-logo img {
-  max-height: 40px;
+  max-height: calc(48px * 1.22 * 1.28);
   max-width: 100%;
   width: auto;
   height: auto;
